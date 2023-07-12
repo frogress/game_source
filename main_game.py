@@ -1,3 +1,5 @@
+# 깃허브 테스트
+
 import pygame
 pygame.init()
 
@@ -14,6 +16,7 @@ clock = pygame.time.Clock()
 # 1. 사용자 게임 초기화 (배경화면, 게임, 게임 이미지, 좌표, 속도, 폭트 등)
     # 배경 이미지 불러오기
     # 캐릭터 불러오기
+    # 적 불러오기
 
 running = True # 게임이 진행중인가?
 while running:
