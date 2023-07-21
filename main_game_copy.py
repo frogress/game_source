@@ -1,49 +1,76 @@
 import pygame
+import sys
+import os
+import time
 
-pygame.init()
-# 화면 크기 설정
+pygame.init() # 초기화
+
+# 파일 경로 탐색
+current_path = os.path.dirname(__file__)
+resource_path = os.path.join(current_path, "resources/images")
+
+# 타이틀 이름
+pygame.display.set_caption("Chronoscape")
+
+# 로고 설정
+logo = pygame.image.load(os.path.join(resource_path, "chronoscape_logo.png"))
+pygame.display.set_icon(logo)
+
+# 파일 이미지들 로드하기
+character_img = pygame.image.load(os.path.join(resource_path, "character.png"))
+main_poster_img = pygame.image.load(os.path.join(resource_path, "main_poster.png"))
+start_button_img = pygame.image.load(os.path.join(resource_path, "start_button.png"))
+start_button_act_img = pygame.image.load(os.path.join(resource_path, "start_button_act.png"))
+tutorial_background_img = pygame.image.load(os.path.join(resource_path, "tutorial_background.png"))
+
+# 프레임
+clock = pygame.time.Clock()
+
+# 화면 크기
 screen_width = 1920 # 가로 크기
 screen_height = 1080 # 세로 크기
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
-pygame.display.set_caption("Chronoscape")
-
-# FPS
-clock = pygame.time.Clock()
-######################################################################
-# 1. 사용자 게임 초기화 (배경화면, 게임, 게임 이미지, 좌표, 속도, 폭트 등)
-    # 배경 이미지 불러오기
-main_poster = pygame.image.load("game_git/resources/images/tutorial_background.png")
-main_poster = pygame.transform.scale(main_poster, (1920, 1080))
-start_button = pygame.image.load("game_git/resources/images/start_button.png")
-start_button = pygame.transform.scale(start_button, (256, 142))
-start_button_size = start_button.get_rect().size
-start_button_width = start_button_size[0] # 캐릭터의 가로 크기
-    # 캐릭터 불러오기
-    # 적 불러오기
-
-running = True # 게임이 진행중인가?
-while running:
-    dt = clock.tick(60) # 게임화면의 초당 프레임수를 설정
+# 이미지 크기 설정
+main_poster_img = pygame.transform.scale(main_poster_img, (1920, 1080))
+start_button_img = pygame.transform.scale(start_button_img, (256, 142))
+start_button_size = start_button_img.get_rect().size
+start_button_width = start_button_size[0]
+start_button_height = start_button_size[1]
+start_button_act_img = pygame.transform.scale(start_button_act_img, (start_button_width, start_button_height))
 
 
-    # 2. 이벤트 처리 (키보드, 마우스 등)
-    for event in pygame.event.get(): # 어떤 이벤트가 발생하였는가?
-        if event.type == pygame.QUIT: # 창이 닫히는 이벤트가 발생하였는가?
-            running = False # 게임이 진행중이 아님
+# 기본 버튼 클래스
+class Button:
+    def __init__(self, img_in, x, y, width, height, img_act, action=None):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            screen.blit(img_act, (x, y))
+            if click[0] and action != None:
+                action()
+        else:
+            screen.blit(img_in, (x, y))
 
+# 종료 함수
+def quitGame():
+    pygame.quit()
+    sys.exit()
 
-    # 3. 게임 캐릭터 위치 정의
-        # 가로 경계값 처리
-        # 세로 경계값 처리
+# 메인 메뉴 함수
+def mainMenu():
+    menu = True
 
+    while menu:
+        dt = clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    # 4. 충돌처리
+            screen.blit(main_poster_img, (0, 0))
+            start_button = Button(start_button_img, ((screen_width / 2) - (start_button_width / 2)), (screen_height / 1.5), start_button_width, start_button_height, start_button_act_img, quitGame)
+            pygame.display.update()
 
-
-    # 5. 화면에 그리기
-    screen.blit(main_poster, (0, 0)) # 배경 그리기
-    screen.blit(start_button, ((screen_width / 2) - (start_button_width / 2), (screen_height / 1.5)))
-    pygame.display.update() # 게임화면을 다시 그리기!
-    
+mainMenu() # 메인 메뉴 함수 불러오기
 pygame.quit()
