@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import time
+import ctypes
 
 pygame.init() # 초기화
 
@@ -27,13 +28,14 @@ tutorial_background_img = pygame.image.load(os.path.join(resource_path, "tutoria
 clock = pygame.time.Clock()
 
 # 화면 크기
-screen_width = 1920 # 가로 크기
-screen_height = 1080 # 세로 크기
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+u32 = ctypes.windll.user32
+resolution_width = u32.GetSystemMetrics(0)
+resolution_height = u32.GetSystemMetrics(1)
+screen = pygame.display.set_mode((resolution_width, resolution_height), pygame.FULLSCREEN)
 
 # 이미지 크기 설정
-main_poster_img = pygame.transform.scale(main_poster_img, (1920, 1080))
-start_button_img = pygame.transform.scale(start_button_img, (256, 142))
+main_poster_img = pygame.transform.scale(main_poster_img, (resolution_width, resolution_height))
+start_button_img = pygame.transform.scale(start_button_img, ((resolution_width / 7), (resolution_height / 7)))
 start_button_size = start_button_img.get_rect().size
 start_button_width = start_button_size[0]
 start_button_height = start_button_size[1]
@@ -69,8 +71,9 @@ def mainMenu():
                 sys.exit()
 
             screen.blit(main_poster_img, (0, 0))
-            start_button = Button(start_button_img, ((screen_width / 2) - (start_button_width / 2)), (screen_height / 1.5), start_button_width, start_button_height, start_button_act_img, quitGame)
+            start_button = Button(start_button_img, ((resolution_width / 2) - (start_button_width / 2)), (resolution_height / 1.5), start_button_width, start_button_height, start_button_act_img, quitGame)
             pygame.display.update()
 
 mainMenu() # 메인 메뉴 함수 불러오기
 pygame.quit()
+sys.exit()
